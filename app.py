@@ -9,8 +9,12 @@ def home():
     return render_template('home.html')
 
 @socketio.on('connect')
-def handle_connect():
-    socketio.emit("welcome-message", {"message": "Welcome to the chat"})
+def handle_connect(sid):
+    socketio.emit("welcome-message", {"message": "Welcome to the chat"}, to=sid)
+
+@socketio.on('message')
+def handle_message(data):
+    socketio.emit("message", data)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
