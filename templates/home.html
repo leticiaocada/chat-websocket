@@ -1,37 +1,47 @@
 <!DOCTYPE html>
-<head>
 
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
+    <div id="messageBox"></div>
     <div>
-        <p id="message">
-            Websockets connecting
-        </p>
-        <input type="text" id="messageInput" placeholder="Type your message"> 
+        <input type="text" id="messageInput" placeholder="Type your message">
         <button onclick="handleMessage()">Send</button>
     </div>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+    integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+    crossorigin="anonymous"></script>
 <script>
-    var socket = io.connect('http://127.0.0.1:5000/');
-    socket.on('connect', function(){
+    var socket = io.connect('http://127.0.0.1:3000/');
+    socket.on('connect', function () {
         console.log("websocket connected");
     })
-    socket.on('welcome-message', function(...args){
-        console.log(args);
-        document.getElementById("message").innerHTML = args[0].message;
+    socket.on('welcome-message', function (...args) {
+        const messageBox = document.getElementById("messageBox");
+        const p = document.createElement("p");
+        p.textContent = args[0].message;
+        messageBox.appendChild(p);
     })
-    socket.on('message', function(...args){
-        console.log(args);
+    socket.on('message', function (...args) {
+        const messageBox = document.getElementById("messageBox");
+        const p = document.createElement("p");
+        p.textContent = args[0].message;
+        messageBox.appendChild(p);
     })
-    function handleMessage(){
+    function handleMessage() {
         let message = document.getElementById('messageInput').value;
-        socket.emit("message", {"message": message})
+        socket.emit("message", { "message": message })
+        const input = document.getElementById("messageInput");
+        input.value = "";
     }
-    document.getElementById('messageInput').addEventListener("keypress", function(event){
+    document.getElementById('messageInput').addEventListener("keypress", function (event) {
         if (event.key == "Enter") {
             handleMessage();
         }
     })
 </script>
+
 </html>
